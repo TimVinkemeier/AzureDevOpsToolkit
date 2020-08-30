@@ -70,7 +70,7 @@
                 <DataGrid.Columns>
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.Header>
-                            <CheckBox IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mvx:MvxWpfView}}, Path=DataContext.AreAllResultsSelected}" Content=""/>
+                            <CheckBox IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mvx:MvxWpfView}}, Path=DataContext.AreAllResultsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="" />
                         </DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
