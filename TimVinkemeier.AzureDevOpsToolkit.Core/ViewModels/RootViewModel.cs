@@ -1,10 +1,8 @@
-﻿using MvvmCross.Commands;
-using MvvmCross.Logging;
+﻿using MvvmCross.Logging;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 
-using TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.SearchAndReplace;
-using TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.Settings;
+using TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.Menu;
 
 namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels
 {
@@ -13,13 +11,12 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels
         public RootViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService)
             : base(logProvider, navigationService)
         {
-            GoToSearchAndReplaceCommand = new MvxAsyncCommand(() => NavigationService.Navigate<SearchAndReplaceViewModel>());
-
-            GoToSettingsCommand = new MvxAsyncCommand(() => NavigationService.Navigate<SettingsViewModel>());
         }
 
-        public IMvxAsyncCommand GoToSearchAndReplaceCommand { get; }
-
-        public IMvxAsyncCommand GoToSettingsCommand { get; }
+        public override void ViewAppearing()
+        {
+            NavigationService.Navigate<MainMenuViewModel>();
+            NavigationService.Navigate<StartPageViewModel>();
+        }
     }
 }

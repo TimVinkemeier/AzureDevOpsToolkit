@@ -1,9 +1,9 @@
-﻿<mvx:MvxApplication x:Class="TimVinkemeier.AzureDevOpsToolkit.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:TimVinkemeier.AzureDevOpsToolkit"
-             xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
-             StartupUri="MainWindow.xaml">
-    <Application.Resources>
-    </Application.Resources>
+﻿<mvx:MvxApplication
+    x:Class="TimVinkemeier.AzureDevOpsToolkit.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:TimVinkemeier.AzureDevOpsToolkit"
+    xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
+    StartupUri="MainWindow.xaml">
+    <Application.Resources />
 </mvx:MvxApplication>

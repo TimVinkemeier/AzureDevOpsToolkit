@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MvvmCross" Version="7.0.0" />
     <PackageReference Include="MvvmCross.Platforms.Wpf" Version="7.0.0" />
     <PackageReference Include="MvvmCross.Plugin.Messenger" Version="7.0.0" />
@@ -15,6 +19,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TimVinkemeier.AzureDevOpsToolkit.Core\TimVinkemeier.AzureDevOpsToolkit.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Logo.png" />
   </ItemGroup>
 
   <ItemGroup>

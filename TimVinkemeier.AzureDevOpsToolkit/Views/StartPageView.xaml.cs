@@ -2,18 +2,18 @@
 using MvvmCross.ViewModels;
 
 using TimVinkemeier.AzureDevOpsToolkit.Core.Services;
-using TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.Settings;
+using TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels;
 
 namespace TimVinkemeier.AzureDevOpsToolkit.Views
 {
     /// <summary>
-    /// Interaction logic for SettingsView.xaml
+    /// Interaction logic for StartPageView.xaml
     /// </summary>
-    [MvxViewFor(typeof(SettingsViewModel))]
+    [MvxViewFor(typeof(StartPageViewModel))]
     [OutletBasedPresentation(OutletIdentifier = "RouterOutlet")]
-    public partial class SettingsView : MvxWpfView
+    public partial class StartPageView : MvxWpfView
     {
-        public SettingsView()
+        public StartPageView()
         {
             InitializeComponent();
         }

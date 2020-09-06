@@ -1,28 +1,36 @@
-﻿<mvx:MvxWpfView x:Class="TimVinkemeier.AzureDevOpsToolkit.Views.SearchAndReplaceView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:TimVinkemeier.AzureDevOpsToolkit.Views"
-             xmlns:vms="clr-namespace:TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.SearchAndReplace;assembly=TimVinkemeier.AzureDevOpsToolkit.Core"
-             xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
-             mc:Ignorable="d"
-             Background="White"
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<mvx:MvxWpfView
+    x:Class="TimVinkemeier.AzureDevOpsToolkit.Views.SearchAndReplaceView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TimVinkemeier.AzureDevOpsToolkit.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
+    xmlns:vms="clr-namespace:TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.SearchAndReplace;assembly=TimVinkemeier.AzureDevOpsToolkit.Core"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Background="White"
+    mc:Ignorable="d">
     <mvx:MvxWpfView.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </mvx:MvxWpfView.Resources>
     <Grid>
         <StackPanel Margin="12,6,12,6">
-            <Button Content="❮ Back to Main Menu" HorizontalAlignment="Left" Command="{Binding BackToRootCommand}" BorderThickness="0" Background="Transparent" Foreground="CornflowerBlue" />
-            <TextBlock Text="Work item Find-and-Replace" FontSize="18" Margin="0,6,0,12" />
-            <TextBlock Text="Find" Margin="0,0,0,2" />
+            <TextBlock
+                Margin="0,6,0,12"
+                FontSize="18"
+                Text="Work item Find-and-Replace" />
+            <TextBlock Margin="0,0,0,2" Text="Find" />
             <TextBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock Text="in Types" />
             <ItemsControl ItemsSource="{Binding SearchItemTypes}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="vms:SearchFieldViewModel">
-                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="{Binding DisplayName}" ToolTip="{Binding AzureDevOpsTypeName}" Margin="0,0,6,0" />
+                        <CheckBox
+                            Margin="0,0,6,0"
+                            Content="{Binding DisplayName}"
+                            IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            ToolTip="{Binding AzureDevOpsTypeName}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
@@ -31,11 +39,15 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
-            <TextBlock Text="using Fields" Margin="0,6,0,0" />
+            <TextBlock Margin="0,6,0,0" Text="using Fields" />
             <ItemsControl ItemsSource="{Binding SearchFields}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="vms:SearchFieldViewModel">
-                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="{Binding DisplayName}" ToolTip="{Binding AzureDevOpsFieldName}" Margin="0,0,6,0" />
+                        <CheckBox
+                            Margin="0,0,6,0"
+                            Content="{Binding DisplayName}"
+                            IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            ToolTip="{Binding AzureDevOpsFieldName}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
@@ -44,33 +56,55 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
-            <Button Content="Search" Command="{Binding SearchCommand}" Margin="0,4,0,0" />
+            <Button
+                Margin="0,4,0,0"
+                Command="{Binding SearchCommand}"
+                Content="Search" />
 
-            <Grid Visibility="{Binding IsRunningSearch, Converter={StaticResource BoolToVis}}" Margin="0,6,0,0">
-                <ProgressBar IsIndeterminate="True" Visibility="{Binding IsRunningSearch, Converter={StaticResource BoolToVis}}" Height="18" />
-                <TextBlock Text="Searching..." HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Grid Margin="0,6,0,0" Visibility="{Binding IsRunningSearch, Converter={StaticResource BoolToVis}}">
+                <ProgressBar
+                    Height="18"
+                    IsIndeterminate="True"
+                    Visibility="{Binding IsRunningSearch, Converter={StaticResource BoolToVis}}" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="Searching..." />
             </Grid>
 
-            <TextBlock Text="Replace selected with" Margin="0,12,0,2" />
+            <TextBlock Margin="0,12,0,2" Text="Replace selected with" />
             <TextBox Text="{Binding ReplaceText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <Button Content="Replace" Command="{Binding ReplaceCommand}" Margin="0,4,0,0" />
+            <Button
+                Margin="0,4,0,0"
+                Command="{Binding ReplaceCommand}"
+                Content="Replace" />
 
-            <Grid Visibility="{Binding IsRunningReplace, Converter={StaticResource BoolToVis}}" Margin="0,6,0,0">
-                <ProgressBar Value="{Binding CurrentReplacementCount}" Maximum="{Binding TotalReplacementCount}" Visibility="{Binding IsRunningReplacement, Converter={StaticResource BoolToVis}}" Height="18" SmallChange="1">
-                </ProgressBar>
+            <Grid Margin="0,6,0,0" Visibility="{Binding IsRunningReplace, Converter={StaticResource BoolToVis}}">
+                <ProgressBar
+                    Height="18"
+                    Maximum="{Binding TotalReplacementCount}"
+                    SmallChange="1"
+                    Visibility="{Binding IsRunningReplacement, Converter={StaticResource BoolToVis}}"
+                    Value="{Binding CurrentReplacementCount}" />
                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top">
                     <Run Text="Running selected replacements (" /><Run Text="{Binding CurrentReplacementCount}" /><Run Text="/" /><Run Text="{Binding TotalReplacementCount}" /><Run Text=")" />
                 </TextBlock>
             </Grid>
 
             <TextBlock Margin="0,12,0,6">
-                <Run Text="Results" /><Run Text=" (" /><Run Text="{Binding TotalReplacementCount,Mode=OneWay}" /><Run Text=" selected/" /><Run Text="{Binding SearchResults.Count,Mode=OneWay}" /><Run Text=" total)" />
+                <Run Text="Results" /><Run Text=" (" /><Run Text="{Binding TotalReplacementCount, Mode=OneWay}" /><Run Text=" selected/" /><Run Text="{Binding SearchResults.Count, Mode=OneWay}" /><Run Text=" total)" />
             </TextBlock>
-            <DataGrid ItemsSource="{Binding SearchResults}" AutoGenerateColumns="False" MaxHeight="600" CanUserAddRows="False" AlternatingRowBackground="LightGray" AlternationCount="1">
+            <DataGrid
+                MaxHeight="600"
+                AlternatingRowBackground="LightGray"
+                AlternationCount="1"
+                AutoGenerateColumns="False"
+                CanUserAddRows="False"
+                ItemsSource="{Binding SearchResults}">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.Header>
-                            <CheckBox IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mvx:MvxWpfView}}, Path=DataContext.AreAllResultsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="" />
+                            <CheckBox Content="" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mvx:MvxWpfView}}, Path=DataContext.AreAllResultsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -81,14 +115,14 @@
                     <DataGridTemplateColumn Header="ID" IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Id,Mode=OneWay}" />
+                                <TextBlock Text="{Binding Id, Mode=OneWay}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="Title" IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Title,Mode=OneWay}" />
+                                <TextBlock Text="{Binding Title, Mode=OneWay}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -110,7 +144,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock>
-                                    <Run Text="{Binding FindHighlightPrefix,Mode=OneWay}" /><Run Text="{Binding FindHighlight,Mode=OneWay}" Foreground="DarkOrange" /><Run Text="{Binding FindHighlightPostfix,Mode=OneWay}" />
+                                    <Run Text="{Binding FindHighlightPrefix, Mode=OneWay}" /><Run Foreground="DarkOrange" Text="{Binding FindHighlight, Mode=OneWay}" /><Run Text="{Binding FindHighlightPostfix, Mode=OneWay}" />
                                 </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

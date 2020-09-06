@@ -1,23 +1,27 @@
-﻿<mvx:MvxWpfView x:Class="TimVinkemeier.AzureDevOpsToolkit.Views.SettingsView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:TimVinkemeier.AzureDevOpsToolkit.Views"
-             xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
-             mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<mvx:MvxWpfView
+    x:Class="TimVinkemeier.AzureDevOpsToolkit.Views.SettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TimVinkemeier.AzureDevOpsToolkit.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
     <Grid>
         <StackPanel Margin="12,6,12,6" HorizontalAlignment="Left">
-            <Button Content="❮ Back to Main Menu" HorizontalAlignment="Left" Command="{Binding BackToRootCommand}" BorderThickness="0" Background="Transparent" Foreground="CornflowerBlue" />
-            <TextBlock Text="Settings" FontSize="18" Margin="0,6,0,12" />
+            <TextBlock
+                Margin="0,6,0,12"
+                FontSize="18"
+                Text="Settings" />
             <TextBlock Text="Azure DevOps Organisation Base Url" />
             <TextBox Text="{Binding BaseUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="Azure DevOps Project Name" Margin="0,6,0,0" />
+            <TextBlock Margin="0,6,0,0" Text="Azure DevOps Project Name" />
             <TextBox Text="{Binding ProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="Azure DevOps Personal Access Token" Margin="0,6,0,0" />
+            <TextBlock Margin="0,6,0,0" Text="Azure DevOps Personal Access Token" />
             <TextBox Text="{Binding Token, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <Button Content="Save" Command="{Binding SaveCommand}" />
+            <Button Command="{Binding SaveCommand}" Content="Save" />
         </StackPanel>
     </Grid>
 </mvx:MvxWpfView>
