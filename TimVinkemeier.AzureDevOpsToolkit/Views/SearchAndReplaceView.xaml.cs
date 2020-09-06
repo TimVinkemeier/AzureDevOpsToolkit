@@ -1,4 +1,6 @@
-﻿using MvvmCross.Platforms.Wpf.Views;
+﻿using System.Windows.Controls;
+
+using MvvmCross.Platforms.Wpf.Views;
 using MvvmCross.ViewModels;
 
 using TimVinkemeier.AzureDevOpsToolkit.Core.Services;
@@ -16,6 +18,12 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Views
         public SearchAndReplaceView()
         {
             InitializeComponent();
+        }
+
+        private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var row = sender as DataGridRow;
+            (DataContext as SearchAndReplaceViewModel)?.OpenWorkItemCommand?.Execute((row.DataContext as WorkItemSearchResultViewModel).Id);
         }
     }
 }
