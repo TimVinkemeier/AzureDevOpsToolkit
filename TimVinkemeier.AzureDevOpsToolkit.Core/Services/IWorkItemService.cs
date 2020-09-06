@@ -17,6 +17,8 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.Services
 
         Task<IReadOnlyList<WorkItemType>> GetWorkItemTypesAsync();
 
+        Task TestSettingsAsync(string baseUrl, string projectName, string accessToken);
+
         Task UpdateWorkItemAsync(int workItemId, JsonPatchDocument patchDocument, CancellationToken cancellationToken);
     }
 }

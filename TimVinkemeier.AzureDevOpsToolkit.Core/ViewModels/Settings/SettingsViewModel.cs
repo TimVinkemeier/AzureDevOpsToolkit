@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 using MvvmCross.Commands;
 using MvvmCross.Logging;
 using MvvmCross.Navigation;
+using MvvmCross.ViewModels;
 
 using TimVinkemeier.AzureDevOpsToolkit.Core.Services;
 
@@ -11,16 +13,19 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.Settings
     public class SettingsViewModel : ContentViewBaseViewModel
     {
         private readonly ISettingsService _settingsService;
+        private readonly IWorkItemService _workItemService;
         private string _baseUrl;
         private bool _hasChanges = false;
         private string _projectName;
+        private string _saveErrorMessage;
         private string _token;
 
-        public SettingsViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService, ISettingsService settingsService)
-                    : base(logProvider, navigationService)
+        public SettingsViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService, ISettingsService settingsService, IWorkItemService workItemService)
+            : base(logProvider, navigationService)
         {
             _settingsService = settingsService;
             SaveCommand = new MvxAsyncCommand(SaveSettingsAsync, () => _hasChanges);
+            _workItemService = workItemService;
         }
 
         public string BaseUrl
@@ -47,6 +52,12 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.Settings
 
         public MvxAsyncCommand SaveCommand { get; }
 
+        public string SaveErrorMessage
+        {
+            get => _saveErrorMessage;
+            set => SetProperty(ref _saveErrorMessage, value);
+        }
+
         public string Token
         {
             get => _token;
@@ -67,9 +78,27 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.Settings
 
         private async Task SaveSettingsAsync()
         {
-            await _settingsService.SetSettingAsync(Setting.AzureDevOpsToken, Token).ConfigureAwait(false);
-            await _settingsService.SetSettingAsync(Setting.OrganisationBaseUrl, BaseUrl).ConfigureAwait(false);
-            await _settingsService.SetSettingAsync(Setting.ProjectName, ProjectName).ConfigureAwait(false);
+            SaveErrorMessage = null;
+
+            try
+            {
+                BusyTask = MvxNotifyTask.Create(_workItemService.TestSettingsAsync(BaseUrl, ProjectName, Token));
+                await BusyTask.Task.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                SaveErrorMessage = ex.Message;
+                _hasChanges = false;
+                SaveCommand?.RaiseCanExecuteChanged();
+                return;
+            }
+
+            BusyTask = MvxNotifyTask.Create(Task.WhenAll(
+                _settingsService.SetSettingAsync(Setting.AzureDevOpsToken, Token),
+                _settingsService.SetSettingAsync(Setting.OrganisationBaseUrl, BaseUrl),
+                _settingsService.SetSettingAsync(Setting.ProjectName, ProjectName)));
+
+            await BusyTask.Task.ConfigureAwait(false);
             _hasChanges = false;
             SaveCommand.RaiseCanExecuteChanged();
         }

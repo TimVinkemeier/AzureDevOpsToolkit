@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.SearchAndReplace
     public class SearchAndReplaceViewModel : ContentViewBaseViewModel
     {
         private readonly IMessenger _messenger;
+        private readonly ISettingsService _settingsService;
         private readonly IWorkItemService _workItemService;
         private int _currentReplacementCount;
         private bool _isRunningReplace;
@@ -34,21 +36,22 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.SearchAndReplace
 
         private int _totalReplacementCount;
 
-        public SearchAndReplaceViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService, IWorkItemService workItemService, IMessenger messenger)
-                    : base(logProvider, navigationService)
+        public SearchAndReplaceViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService, IWorkItemService workItemService, IMessenger messenger, ISettingsService settingsService)
+            : base(logProvider, navigationService)
         {
-            SearchText = "notification";
             SearchCommand = new MvxAsyncCommand(
                 () => SearchAsync(SearchText, SearchItemTypes.Where(f => f.IsSelected).ToList(), SearchFields.Where(f => f.IsSelected).ToList()),
                 () => !string.IsNullOrWhiteSpace(SearchText) && !IsRunningReplace && SearchItemTypes.Count(f => f.IsSelected) > 0 && SearchFields.Count(f => f.IsSelected) > 0);
             ReplaceCommand = new MvxAsyncCommand(ReplaceAsync, () => TotalReplacementCount > 0 && !string.IsNullOrWhiteSpace(ReplaceText) && !IsRunningSearch);
+            OpenWorkItemCommand = new MvxAsyncCommand<int>(OpenWorkItemAsync, id => id > 0);
             _workItemService = workItemService;
             _messenger = messenger;
+            _settingsService = settingsService;
         }
 
         public bool AreAllResultsSelected
         {
-            get { return SearchResults?.All(r => r.IsSelected) ?? false; }
+            get { return SearchResults?.Count > 0 && (SearchResults?.All(r => r.IsSelected) ?? false); }
             set
             {
                 foreach (var result in SearchResults)
@@ -85,6 +88,8 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.SearchAndReplace
                 ReplaceCommand?.RaiseCanExecuteChanged();
             }
         }
+
+        public IMvxAsyncCommand<int> OpenWorkItemCommand { get; }
 
         public IMvxAsyncCommand ReplaceCommand { get; }
 
@@ -182,6 +187,17 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.SearchAndReplace
             ReplaceCommand?.RaiseCanExecuteChanged();
 
             RaisePropertyChanged(nameof(AreAllResultsSelected));
+        }
+
+        private async Task OpenWorkItemAsync(int workItemId)
+        {
+            var baseUrl = await _settingsService.GetSettingAsync<string>(Setting.OrganisationBaseUrl).ConfigureAwait(false);
+            var projectName = await _settingsService.GetSettingAsync<string>(Setting.ProjectName).ConfigureAwait(false);
+            Process.Start(new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                FileName = $"{baseUrl}/{projectName}/_workitems/edit/{workItemId}/"
+            });
         }
 
         private async Task PopulateSearchFieldsAsync()

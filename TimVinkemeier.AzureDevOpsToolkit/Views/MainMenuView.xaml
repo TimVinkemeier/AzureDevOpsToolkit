@@ -12,6 +12,30 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <mvx:MvxWpfView.Resources>
+        <DataTemplate x:Key="MainMenuItemTemplate" DataType="{x:Type vms:MainMenuItemViewModel}">
+            <Button
+                Padding="12"
+                HorizontalContentAlignment="Left"
+                Background="Transparent"
+                BorderThickness="0"
+                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mvx:MvxWpfView}}, Path=DataContext.NavigateCommand}"
+                CommandParameter="{Binding}"
+                Content="{Binding DisplayName}"
+                FontSize="16"
+                IsEnabled="{Binding IsSelected, Converter={c:BooleanInversionConverter}}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="DodgerBlue" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </DataTemplate>
+    </mvx:MvxWpfView.Resources>
     <Grid Background="LightGray">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -21,27 +45,13 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Image Height="48" Source="/TimVinkemeier.AzureDevOpsToolkit;component/Assets/Logo.png" />
         </StackPanel>
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding Items}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type vms:MainMenuItemViewModel}">
-                    <Button
-                        Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mvx:MvxWpfView}}, Path=DataContext.NavigateCommand}"
-                        CommandParameter="{Binding}"
-                        Content="{Binding DisplayName}"
-                        IsEnabled="{Binding IsSelected, Converter={c:BooleanInversionConverter}}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        <ItemsControl Grid.Row="2" ItemsSource="{Binding SecondaryItems}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type vms:MainMenuItemViewModel}">
-                    <Button
-                        Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mvx:MvxWpfView}}, Path=DataContext.NavigateCommand}"
-                        CommandParameter="{Binding}"
-                        Content="{Binding DisplayName}"
-                        IsEnabled="{Binding IsSelected, Converter={c:BooleanInversionConverter}}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <ItemsControl
+            Grid.Row="1"
+            ItemTemplate="{StaticResource MainMenuItemTemplate}"
+            ItemsSource="{Binding Items}" />
+        <ItemsControl
+            Grid.Row="2"
+            ItemTemplate="{StaticResource MainMenuItemTemplate}"
+            ItemsSource="{Binding SecondaryItems}" />
     </Grid>
 </mvx:MvxWpfView>
