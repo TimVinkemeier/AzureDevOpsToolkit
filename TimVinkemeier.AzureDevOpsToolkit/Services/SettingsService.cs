@@ -1,7 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Microsoft.VisualStudio.Services.Common;
 
 using Newtonsoft.Json;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 using TimVinkemeier.AzureDevOpsToolkit.Core.Services;
 
@@ -9,42 +13,59 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Services
 {
     public class SettingsService : ISettingsService
     {
-        public Task<T> GetSettingAsync<T>(Setting setting)
-        {
-            var value = setting switch
-            {
-                Setting.AzureDevOpsToken => Properties.Settings.Default.AzureDevOpsToken,
-                Setting.OrganisationBaseUrl => Properties.Settings.Default.OrganisationBaseUrl,
-                Setting.ProjectName => Properties.Settings.Default.ProjectName,
-                _ => throw new ArgumentException(null, nameof(setting))
-            };
+        private IDictionary<string, string> _allSettings;
 
-            return Task.FromResult(JsonConvert.DeserializeObject<T>(value));
+        public async Task<T> GetSettingAsync<T>(Setting setting)
+        {
+            if (_allSettings is null)
+            {
+                await ReadSettingsAsync().ConfigureAwait(false);
+            }
+
+            var key = Enum.GetName(setting);
+            return _allSettings.TryGetValue(key, out var value)
+                ? JsonConvert.DeserializeObject<T>(value)
+                : default;
         }
 
-        public Task SetSettingAsync<T>(Setting setting, T value)
+        public async Task SetSettingAsync<T>(Setting setting, T value)
         {
-            switch (setting)
+            await ReadSettingsAsync().ConfigureAwait(false);
+
+            var key = Enum.GetName(setting);
+            var json = JsonConvert.SerializeObject(value);
+            _allSettings.AddOrUpdate(key, json, (_, _) => json);
+
+            await SaveSettingsAsync().ConfigureAwait(false);
+            await ReadSettingsAsync().ConfigureAwait(false);
+        }
+
+        private static FileInfo GetSettingsFileInfo()
+            => new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TimVinkemeier.AzureDevOps", "settings.json"));
+
+        private async Task ReadSettingsAsync()
+        {
+            var file = GetSettingsFileInfo();
+
+            if (!file.Exists)
             {
-                case Setting.AzureDevOpsToken:
-                    Properties.Settings.Default.AzureDevOpsToken = JsonConvert.SerializeObject(value);
-                    break;
+                _allSettings = new Dictionary<string, string>();
+                await SaveSettingsAsync().ConfigureAwait(false);
+                return;
+            }
 
-                case Setting.OrganisationBaseUrl:
-                    Properties.Settings.Default.OrganisationBaseUrl = JsonConvert.SerializeObject(value);
-                    break;
+            var fullJson = await File.ReadAllTextAsync(file.FullName).ConfigureAwait(false);
+            _allSettings = JsonConvert.DeserializeObject<IDictionary<string, string>>(fullJson);
+        }
 
-                case Setting.ProjectName:
-                    Properties.Settings.Default.ProjectName = JsonConvert.SerializeObject(value);
-                    break;
+        private async Task SaveSettingsAsync()
+        {
+            var file = GetSettingsFileInfo();
 
-                default:
-                    throw new ArgumentException(null, nameof(setting));
-            };
+            Directory.CreateDirectory(file.DirectoryName);
 
-            Properties.Settings.Default.Save();
-
-            return Task.CompletedTask;
+            var fullJson = JsonConvert.SerializeObject(_allSettings);
+            await File.WriteAllTextAsync(file.FullName, fullJson).ConfigureAwait(false);
         }
     }
 }

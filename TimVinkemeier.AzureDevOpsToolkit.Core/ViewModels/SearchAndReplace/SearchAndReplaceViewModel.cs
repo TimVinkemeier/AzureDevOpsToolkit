@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
+﻿using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.WebApi.Patch;
 using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 
 using MvvmCross.Commands;
 using MvvmCross.Logging;
 using MvvmCross.Navigation;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 using TimVinkemeier.AzureDevOpsToolkit.Core.Extensions;
 using TimVinkemeier.AzureDevOpsToolkit.Core.Messages.SearchAndReplace;
@@ -155,11 +154,12 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.SearchAndReplace
             const int highlightRange = 25;
             var fieldValue = wi.Fields[selectedField.AzureDevOpsFieldName]?.ToString() ?? string.Empty;
             fieldValue = fieldValue.ToLowerInvariant();
-            var findHighlightIndex = fieldValue.IndexOf(searchText);
 
             var parts = fieldValue.Split(new[] { searchText }, StringSplitOptions.RemoveEmptyEntries);
 
-            var prefix = (parts[0].Length > highlightRange ? "..." : string.Empty) + new string(parts[0].Reverse().Take(highlightRange).Reverse().ToArray());
+            var prefix = parts.Length == 0
+                ? string.Empty
+                : (parts[0].Length > highlightRange ? "..." : string.Empty) + new string(parts[0].Reverse().Take(highlightRange).Reverse().ToArray());
             var postfix = parts.Length > 1
                 ? new string(parts[1].Take(highlightRange).ToArray()) + (parts[1].Length > highlightRange ? "..." : string.Empty)
                 : string.Empty;
@@ -244,31 +244,15 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.SearchAndReplace
             var replaceText = ReplaceText;
             var itemsToUpdate = SearchResults.Where(r => r.IsSelected).ToList();
 
-            JsonPatchDocument patchDocumentFactory(WorkItem wi)
-            {
-                var itemToUpdate = itemsToUpdate.Find(i => i.Id == wi.Id);
-                var oldValue = wi.Fields[itemToUpdate.FieldName]?.ToString() ?? string.Empty;
-                var newValue = Regex.Replace(oldValue, itemToUpdate.SearchValue, replaceText, RegexOptions.IgnoreCase);
-                return new JsonPatchDocument
-                 {
-                    new JsonPatchOperation
-                    {
-                        Operation = Operation.Replace,
-                        Path = $"/fields/{itemToUpdate.FieldName}",
-                        Value = newValue
-                    }
-                 };
-            }
-
+            CurrentReplacementCount = 0;
             TotalReplacementCount = itemsToUpdate.Count;
-            var count = 0;
             foreach (var workItemVm in itemsToUpdate)
             {
                 try
                 {
                     var workItem = await _workItemService.GetWorkItemAsync(workItemVm.Id).ConfigureAwait(false);
                     var oldValue = workItem.Fields[workItemVm.FieldName]?.ToString() ?? string.Empty;
-                    var newValue = Regex.Replace(oldValue, workItemVm.SearchValue, replaceText, RegexOptions.IgnoreCase);
+                    var newValue = oldValue?.Replace(workItemVm.SearchValue, replaceText);
                     var patchDocument = new JsonPatchDocument
                     {
                         new JsonPatchOperation
@@ -286,8 +270,8 @@ namespace TimVinkemeier.AzureDevOpsToolkit.Core.ViewModels.SearchAndReplace
                     workItemVm.ReplaceResult = $"Replacement failed ({ex.Message})";
                 }
 
-                CurrentReplacementCount = ++count;
                 workItemVm.IsSelected = false;
+                CurrentReplacementCount++;
             }
 
             CurrentReplacementCount = 0;
