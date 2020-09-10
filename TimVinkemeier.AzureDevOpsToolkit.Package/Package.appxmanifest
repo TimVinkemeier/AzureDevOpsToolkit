@@ -9,7 +9,7 @@
   <Identity
     Name="6e54fe58-54ff-4b52-8593-92ad1afe8542"
     Publisher="CN=Tim Vinkemeier"
-    Version="0.1.0.0" />
+    Version="0.1.2.0" />
 
   <Properties>
     <DisplayName>Toolkit for Azure DevOps</DisplayName>

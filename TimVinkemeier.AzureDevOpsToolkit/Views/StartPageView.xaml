@@ -3,13 +3,48 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:extensions="clr-namespace:TimVinkemeier.AzureDevOpsToolkit.Extensions"
     xmlns:local="clr-namespace:TimVinkemeier.AzureDevOpsToolkit.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid>
-        <TextBlock Text="StartPage" />
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <TextBlock FontSize="32" Text="Welcome!" />
+            <TextBlock
+                Margin="0,12,0,0"
+                FontSize="14"
+                Text="The toolkit for Azure DevOps is still in it's early stages, but here's what you can do - please note that all features require you to add the project details in settings first:" />
+        </StackPanel>
+        <WrapPanel Grid.Row="1" Margin="0,18,0,0">
+            <Border
+                Width="600"
+                BorderBrush="LightGray"
+                BorderThickness="1">
+                <StackPanel Margin="6">
+                    <TextBlock FontSize="16" Text="Work Item Find-and-Replace" />
+                    <Image Margin="12" Source="/TimVinkemeier.AzureDevOpsToolkit;component/Assets/FindAndReplaceScreenshot.png" />
+                    <TextBlock
+                        FontSize="12"
+                        Text="Find and replace text in work items of all types and using all text fields. The available work item types and their fields are loaded from your project template."
+                        TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </WrapPanel>
+        <StackPanel Grid.Row="2" Margin="0,24,0,0">
+            <TextBlock>
+                <Run Text="To learn more about and how to use the toolkit, you can visit the" />
+                <Hyperlink extensions:HyperlinkExtensions.IsExternal="true" NavigateUri="https://github.com/TimVinkemeier/AzureDevOpsToolkit">
+                    Github project.
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
     </Grid>
 </mvx:MvxWpfView>

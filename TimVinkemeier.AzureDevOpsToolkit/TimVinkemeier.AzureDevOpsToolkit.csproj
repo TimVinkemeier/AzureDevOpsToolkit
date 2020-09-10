@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\FindAndReplaceScreenshot.png" />
     <None Remove="Assets\Logo.png" />
   </ItemGroup>
 
@@ -23,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\FindAndReplaceScreenshot.png" />
     <Resource Include="Assets\Logo.png" />
   </ItemGroup>
 

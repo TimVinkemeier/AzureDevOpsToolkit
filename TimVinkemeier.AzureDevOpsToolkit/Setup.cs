@@ -1,8 +1,8 @@
-﻿using System.Windows.Controls;
-
-using MvvmCross;
+﻿using MvvmCross;
 using MvvmCross.Platforms.Wpf.Core;
 using MvvmCross.Platforms.Wpf.Presenters;
+
+using System.Windows.Controls;
 
 using TimVinkemeier.AzureDevOpsToolkit.Core.Services;
 using TimVinkemeier.AzureDevOpsToolkit.Services;

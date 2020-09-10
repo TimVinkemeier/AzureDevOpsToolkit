@@ -13,27 +13,27 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <mvx:MvxWpfView.Resources>
+        <Style x:Key="MainMenuItemButtonStyle" TargetType="Button">
+            <Style.Setters>
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="12" />
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="DodgerBlue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <DataTemplate x:Key="MainMenuItemTemplate" DataType="{x:Type vms:MainMenuItemViewModel}">
             <Button
-                Padding="12"
                 HorizontalContentAlignment="Left"
-                Background="Transparent"
-                BorderThickness="0"
                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mvx:MvxWpfView}}, Path=DataContext.NavigateCommand}"
                 CommandParameter="{Binding}"
                 Content="{Binding DisplayName}"
-                FontSize="16"
-                IsEnabled="{Binding IsSelected, Converter={c:BooleanInversionConverter}}">
-                <Button.Style>
-                    <Style TargetType="{x:Type Button}">
-                        <Style.Triggers>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Foreground" Value="DodgerBlue" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
+                IsEnabled="{Binding IsSelected, Converter={c:BooleanInversionConverter}}"
+                Style="{StaticResource MainMenuItemButtonStyle}" />
         </DataTemplate>
     </mvx:MvxWpfView.Resources>
     <Grid Background="LightGray">
@@ -42,9 +42,24 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Image Height="48" Source="/TimVinkemeier.AzureDevOpsToolkit;component/Assets/Logo.png" />
-        </StackPanel>
+        <Button
+            Grid.Row="0"
+            HorizontalContentAlignment="Stretch"
+            Command="{Binding NavigateCommand}"
+            CommandParameter="{Binding StartPageItem}"
+            IsEnabled="{Binding StartPageItem.IsSelected, Converter={c:BooleanInversionConverter}}"
+            Style="{StaticResource MainMenuItemButtonStyle}">
+            <StackPanel Orientation="Horizontal">
+                <Image Height="48" Source="/TimVinkemeier.AzureDevOpsToolkit;component/Assets/Logo.png" />
+                <TextBlock
+                    MaxWidth="120"
+                    Margin="6,0,0,0"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    Text="Toolkit&#10;for Azure DevOps"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+        </Button>
         <ItemsControl
             Grid.Row="1"
             ItemTemplate="{StaticResource MainMenuItemTemplate}"
